@@ -1,0 +1,7 @@
+@if ($isContentError()) {
+  <p>CONTENT LOADING ERROR: {{ $contentErrorMessage() }}</p>
+} @else if ($isContentEmpty()) {
+  <p>CONTENT EMPTY: {{ contentKey }}</p>
+} @else if ($isContentLoading()) {
+  <p>CONTENT LOADING...</p>
+}

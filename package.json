@@ -1,6 +1,11 @@
 {
   "name": "angular-19-signals-state",
-  "version": "0.0.0",
+  "version": "19.0.1",
+  "description": "Angular 19 state management using signals",
+  "author": {
+    "name": "JC Lango",
+    "email": "info@angularexample.com"
+  },
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -14,6 +19,7 @@
     "@angular/compiler": "^19.2.0",
     "@angular/core": "^19.2.0",
     "@angular/forms": "^19.2.0",
+    "@angular/material": "^19.2.0",
     "@angular/platform-browser": "^19.2.0",
     "@angular/platform-browser-dynamic": "^19.2.0",
     "@angular/router": "^19.2.0",
