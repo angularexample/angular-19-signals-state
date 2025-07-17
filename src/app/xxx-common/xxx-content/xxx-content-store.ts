@@ -1,4 +1,4 @@
-import {computed, inject, Injectable, Signal, signal, WritableSignal} from "@angular/core";
+import {computed, inject, Injectable, ResourceRef, Signal, signal, WritableSignal} from "@angular/core";
 import {
   XxxContent,
   XxxContentApi,
@@ -14,7 +14,7 @@ import {XxxHttpUtilities} from "../xxx-utilities/xxx-http-utilities";
 /**
  * XxxContentStore is the feature state for all content.
  * State management for Angular using only Signals and RxJS.
- * If you already know NgRx then we have organized it using the same categories.
+ * If you already know NgRx, then we have organized it using the same categories.
  */
 @Injectable({
   providedIn: 'root'
@@ -28,8 +28,8 @@ export class XxxContentStore {
 
   // Actions
   // To trigger state changes which then change the view
-  // If the operation is asynchronous use RxJS Subject
-  // If not then we can call the effect or reducer directly
+  // If the operation is asynchronous, use RxJS Subject
+  // If not, then we can call the effect or reducer directly
 
   // Action methods run the reducer and effect
   private getContentAction(key: string) {
@@ -41,8 +41,8 @@ export class XxxContentStore {
     this.getContentErrorReducer(key, err);
   }
 
-  private getContentSuccessAction(response: XxxContentApi) {
-    this.getContentSuccessReducer(response);
+  private getContentSuccessAction(contentResource: ResourceRef<XxxContentApi>) {
+    this.getContentSuccessReducer(contentResource);
   }
 
   showContentAction(key: string) {
@@ -128,14 +128,12 @@ export class XxxContentStore {
     const contents: XxxContent[] = this.$contents_().filter(item => item.key !== key);
     // Create a new content object
     const content: XxxContent = {
-      contentModel: undefined,
-      errorMessage: undefined,
       status: XxxContentStatus.LOADING,
       key
     };
     // Add the new content object
     contents.push(content);
-    // Finally update the state
+    // Finally, update the state
     this.$contentState.update(state => ({
         ...state,
         contents
@@ -150,7 +148,6 @@ export class XxxContentStore {
     const contents: XxxContent[] = this.$contents_().filter(item => item.key !== key);
     // Create a new content object
     const content: XxxContent = {
-      contentModel: undefined,
       errorMessage,
       status: XxxContentStatus.ERROR,
       key
@@ -165,18 +162,18 @@ export class XxxContentStore {
     );
   }
 
-  private getContentSuccessReducer(contentApi: XxxContentApi) {
+  private getContentSuccessReducer(contentResource: ResourceRef<XxxContentApi>) {
     // Create a new content object
     const content: XxxContent = {
-      contentModel: contentApi.contentModel,
-      status: contentApi.contentModel.pageTitle && contentApi.contentModel.pageTitle ? XxxContentStatus.LOADED : XxxContentStatus.EMPTY,
-      key: contentApi.key
+      contentResource,
+      status: contentResource.hasValue() && contentResource.value().contentModel.pageTitle ? XxxContentStatus.LOADED : XxxContentStatus.EMPTY,
+      key: contentResource.hasValue() ? contentResource.value().key : ''
     };
-    // Remove any existing content, also replaces old array for immutability
+    // Remove any existing content, also replaces the old array for immutability
     const contents: XxxContent[] = this.$contents_().filter(item => item.key !== content.key);
     // Add the new content object
     contents.push(content);
-    // Finally update the state
+    // Finally, update the state
     this.$contentState.update(state => ({
         ...state,
         contents
@@ -188,24 +185,10 @@ export class XxxContentStore {
   // For data access, navigation, or to open a dialog
   // They are often used to run a service
   getContentEffect(key: string) {
-    let isError = false;
-    this.contentService.getContent(key)
-      .pipe(
-        catchError((err: HttpErrorResponse) => {
-          isError = true;
-          this.getContentErrorAction(key, err);
-          // return an empty response object
-          return of({
-            contentModel: {},
-            key
-          });
-        })
-      )
-      .subscribe(response => {
-        if (!isError) {
-          this.getContentSuccessAction(response);
-        }
-      });
+    const contentResource: ResourceRef<XxxContentApi | undefined> = this.contentService.getContent(key);
+    if (contentResource.hasValue()) {
+      this.getContentSuccessAction(contentResource)
+    }
   }
 
   showContentEffect(key: string) {

@@ -1,5 +1,7 @@
+import {ResourceRef} from '@angular/core';
+
 export interface XxxContent {
-  contentModel?: XxxContentModel;
+  contentResource?: ResourceRef<XxxContentApi>;
   errorMessage?: string;
   key: string;
   status: XxxContentStatus;

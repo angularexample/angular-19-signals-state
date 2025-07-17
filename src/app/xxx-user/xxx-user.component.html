@@ -2,7 +2,7 @@
   <xxx-content contentKey="{{contentKey}}"></xxx-content>
   @if ($content(); as content) {
     <section>
-      <h2>{{ content?.contentModel?.pageTitle }}</h2>
+<!--      <h2>{{ content?.contentModel?.pageTitle }}</h2>-->
     </section>
     @if ($isUsersLoading()) {
       <p>Loading...</p>
@@ -11,7 +11,7 @@
     }
     @if ($isUsersLoaded()) {
       <section>
-        <h3>{{ content?.contentModel?.bodyText }}</h3>
+<!--        <h3>{{ content?.contentModel?.bodyText }}</h3>-->
         <table class="xxx-table">
           <tr>
             <th class="xxx-table-cell-header">ID</th>

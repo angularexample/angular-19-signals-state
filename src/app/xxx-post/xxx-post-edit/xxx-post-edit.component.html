@@ -2,14 +2,14 @@
   <xxx-content contentKey="{{contentKey}}"></xxx-content>
   @if ($content(); as content) {
     <section>
-      <h2>{{ content?.contentModel?.pageTitle }}</h2>
+<!--      <h2>{{ content?.contentModel?.pageTitle }}</h2>-->
     </section>
     @if ($isNoSelectedPost()) {
       <div>There is no selected post.</div>
       <div>Go to User page to select a user. Then on Posts page select a post.</div>
     } @else {
       <section>
-        <h3>{{ content?.contentModel?.bodyText }}</h3>
+<!--        <h3>{{ content?.contentModel?.bodyText }}</h3>-->
         <form [formGroup]="postForm" (ngSubmit)="onSubmit()">
           <label for="xxx-user-id">User Id</label>
           <input formControlName="userId" id="xxx-user-id" readonly>

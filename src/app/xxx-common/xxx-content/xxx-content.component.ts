@@ -1,23 +1,18 @@
-import {ChangeDetectionStrategy, Component, inject, Input, OnInit, Signal} from '@angular/core';
-import {XxxContentFacade} from "./xxx-content-facade.service";
+import {ChangeDetectionStrategy, Component, input} from '@angular/core';
+import {httpResource} from '@angular/common/http';
+import {JsonPipe} from '@angular/common';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [JsonPipe],
   selector: 'xxx-content',
   standalone: true,
   styleUrl: './xxx-content.component.scss',
-  templateUrl: './xxx-content.component.html',
+  templateUrl: './xxx-content.component.html'
 })
-export class XxxContentComponent implements OnInit {
-  private contentFacade: XxxContentFacade = inject(XxxContentFacade);
-  $contentErrorMessage: Signal<string | undefined> = this.contentFacade.$contentErrorMessage;
-  $isContentEmpty: Signal<boolean> = this.contentFacade.$isContentEmpty;
-  $isContentError: Signal<boolean> = this.contentFacade.$isContentError;
-  $isContentLoaded: Signal<boolean> = this.contentFacade.$isContentLoaded;
-  $isContentLoading: Signal<boolean> = this.contentFacade.$isContentLoading;
-  @Input({required: true}) contentKey!: string;
-
-  ngOnInit(): void {
-    this.contentFacade.showContent(this.contentKey);
-  }
+export class XxxContentComponent {
+  contentKey = input.required();
+  contentResource=httpResource(()=>
+    `/data/content/${this.contentKey()}.json`
+  );
 }
