@@ -1,4 +1,4 @@
-@if($content() !== undefined && $content()?.contentResource !== undefined && $content()?.contentResource?.hasValue()){
+@if($content() && $content()?.contentResource && $content()?.contentResource?.hasValue()){
   <pre>{{$content()?.contentResource?.value() | json}}</pre>
 }
 
