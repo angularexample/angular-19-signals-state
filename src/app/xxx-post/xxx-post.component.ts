@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, inject, Signal} from '@angular/core';
 import {XxxContent} from "../xxx-common/xxx-content/xxx-content.types";
 import {XxxContentComponent} from '../xxx-common/xxx-content/xxx-content.component';
-import {XxxContentFacade} from "../xxx-common/xxx-content/xxx-content-facade.service";
+import {XxxContentStore} from '../xxx-common/xxx-content/xxx-content-store';
 import {XxxPost} from "./xxx-post.types";
 import {XxxPostFacadeService} from "./xxx-post-facade.service";
 
@@ -16,9 +16,9 @@ import {XxxPostFacadeService} from "./xxx-post-facade.service";
 })
 export class XxxPostComponent {
   contentKey: string = 'post';
-  private contentFacade: XxxContentFacade = inject(XxxContentFacade);
+  private contentStore: XxxContentStore = inject(XxxContentStore);
   private postFacade: XxxPostFacadeService = inject(XxxPostFacadeService);
-  $content: Signal<XxxContent | undefined> = this.contentFacade.$content;
+  $content: Signal<XxxContent | undefined> = this.contentStore.$content;
   $isNoSelectedUser: Signal<boolean> = this.postFacade.$isNoSelectedUser;
   $isPostsEmpty: Signal<boolean> = this.postFacade.$isPostsEmpty;
   $isPostsLoaded: Signal<boolean> = this.postFacade.$isPostsLoaded;
@@ -27,7 +27,7 @@ export class XxxPostComponent {
   $selectedPostId: Signal<number | undefined> = this.postFacade.$selectedPostId;
 
   constructor() {
-    this.contentFacade.showContent(this.contentKey)
+    this.contentStore.showContent(this.contentKey)
     this.postFacade.showPosts();
   }
 

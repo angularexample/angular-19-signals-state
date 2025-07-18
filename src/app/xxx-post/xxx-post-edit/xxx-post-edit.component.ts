@@ -4,7 +4,7 @@ import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 import {XxxContent} from "../../xxx-common/xxx-content/xxx-content.types";
 import {XxxContentComponent} from '../../xxx-common/xxx-content/xxx-content.component';
-import {XxxContentFacade} from "../../xxx-common/xxx-content/xxx-content-facade.service";
+import {XxxContentStore} from '../../xxx-common/xxx-content/xxx-content-store';
 import {XxxPost, xxxPostFormDataInitial} from "../xxx-post.types";
 import {XxxPostFacadeService} from "../xxx-post-facade.service";
 
@@ -19,10 +19,10 @@ import {XxxPostFacadeService} from "../xxx-post-facade.service";
   templateUrl: './xxx-post-edit.component.html',
 })
 export class XxxPostEditComponent {
-  private contentFacade: XxxContentFacade = inject(XxxContentFacade);
+  private contentStore: XxxContentStore = inject(XxxContentStore);
   private postFacade: XxxPostFacadeService = inject(XxxPostFacadeService);
   contentKey: string = 'post-edit';
-  $content: Signal<XxxContent | undefined> = this.contentFacade.$content;
+  $content: Signal<XxxContent | undefined> = this.contentStore.$content;
   $isNoSelectedPost: Signal<boolean> = this.postFacade.$isNoSelectedPost;
   $isSaveButtonDisabled: Signal<boolean> = this.postFacade.$isSaveButtonDisabled;
   postForm: FormGroup = new FormGroup({
@@ -34,7 +34,7 @@ export class XxxPostEditComponent {
   $selectedPost: Signal<XxxPost | undefined> = this.postFacade.$selectedPost;
 
   constructor() {
-    this.contentFacade.showContent(this.contentKey)
+    this.contentStore.showContent(this.contentKey)
     this.loadFormData();
     this.subscribeToFormChanges();
   }

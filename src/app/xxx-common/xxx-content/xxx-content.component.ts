@@ -1,6 +1,7 @@
-import {ChangeDetectionStrategy, Component, input} from '@angular/core';
-import {httpResource} from '@angular/common/http';
+import {ChangeDetectionStrategy, Component, inject, input, InputSignal, Signal} from '@angular/core';
 import {JsonPipe} from '@angular/common';
+import {XxxContent} from './xxx-content.types';
+import {XxxContentStore} from './xxx-content-store';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -11,8 +12,11 @@ import {JsonPipe} from '@angular/common';
   templateUrl: './xxx-content.component.html'
 })
 export class XxxContentComponent {
-  contentKey = input.required();
-  contentResource=httpResource(()=>
-    `/data/content/${this.contentKey()}.json`
-  );
+  contentStore: XxxContentStore = inject(XxxContentStore);
+  contentKey: InputSignal<string> = input('home');
+  $content: Signal<XxxContent | undefined> = this.contentStore.$content;
+
+  constructor() {
+    this.contentStore.showContent(this.contentKey());
+  }
 }

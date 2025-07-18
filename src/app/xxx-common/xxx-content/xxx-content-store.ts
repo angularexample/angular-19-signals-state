@@ -1,15 +1,6 @@
 import {computed, inject, Injectable, ResourceRef, Signal, signal, WritableSignal} from "@angular/core";
-import {
-  XxxContent,
-  XxxContentApi,
-  xxxContentInitialState,
-  XxxContentState,
-  XxxContentStatus
-} from "./xxx-content.types";
-import {catchError, of} from "rxjs";
+import {XxxContent, XxxContentApi, xxxContentInitialState, XxxContentState} from "./xxx-content.types";
 import {XxxContentService} from "./xxx-content.service";
-import {HttpErrorResponse} from "@angular/common/http";
-import {XxxHttpUtilities} from "../xxx-utilities/xxx-http-utilities";
 
 /**
  * XxxContentStore is the feature state for all content.
@@ -32,42 +23,36 @@ export class XxxContentStore {
   // If not, then we can call the effect or reducer directly
 
   // Action methods run the reducer and effect
-  private getContentAction(key: string) {
-    this.getContentReducer(key);
+  private getContent(key: string) {
     this.getContentEffect(key);
   }
 
-  private getContentErrorAction(key: string, err: HttpErrorResponse) {
-    this.getContentErrorReducer(key, err);
+  private getContentResource(contentResource: ResourceRef<XxxContentApi>) {
+    this.getContentResourceReducer(contentResource);
   }
 
-  private getContentSuccessAction(contentResource: ResourceRef<XxxContentApi>) {
-    this.getContentSuccessReducer(contentResource);
-  }
-
-  showContentAction(key: string) {
+  showContent(key: string) {
     this.showContentReducer(key);
     this.showContentEffect(key);
   }
 
   // Selectors
   // Used to read current values from state.
-  // All selectors have a name that ends with underscore.
-  private $contents_: Signal<XxxContent[]> = computed(() =>
+  private $contents: Signal<XxxContent[]> = computed(() =>
     this.$contentState().contents
   );
 
   // NOTE: A computed signal cannot take a parameter,
-  // While an NgRx selector cam take a parameter.
+  // While an NgRx selector can take a parameter.
   // The workaround is to store the parameter in state, then access it with a selector.
   // The flaw is the selected key could be overwritten if there are nearly simultaneous transactions of different keys!
-  private $selectedKey_: Signal<string | undefined> = computed(() =>
+  private $selectedKey: Signal<string | undefined> = computed(() =>
     this.$contentState().selectedKey
-  )
+  );
 
-  $content_: Signal<XxxContent | undefined> = computed(() => {
-    const selectedKey: string | undefined = this.$selectedKey_();
-    const contents: XxxContent[] = this.$contents_();
+$content: Signal<XxxContent | undefined> = computed(() => {
+    const selectedKey: string | undefined = this.$selectedKey();
+    const contents: XxxContent[] = this.$contents();
     let content: XxxContent | undefined;
     if (selectedKey) {
       content = contents.find(item => item.key === selectedKey);
@@ -76,43 +61,16 @@ export class XxxContentStore {
   })
 
   $errorMessage_: Signal<string | undefined> = computed(() => {
-    const content: XxxContent | undefined = this.$content_();
-    if (content) {
-      return content?.errorMessage;
-    }
+    // const content: XxxContent | undefined = this.$content_();
+    // if (content) {
+    //   return content?.errorMessage;
+    // }
+    //TODO
     return undefined;
   })
 
-  $isContentEmpty_: Signal<boolean> = computed(() => {
-    const content: XxxContent | undefined = this.$content_();
-    if (content) {
-      return content?.status !== XxxContentStatus.ERROR && content?.status === XxxContentStatus.EMPTY;
-    }
-    return false;
-  })
-
-  $isContentError_: Signal<boolean> = computed(() => {
-    const content: XxxContent | undefined = this.$content_();
-    if (content) {
-      return content?.status === XxxContentStatus.ERROR;
-    }
-    return false;
-  })
-
-  $isContentLoaded_: Signal<boolean> = computed(() => {
-    const content: XxxContent | undefined = this.$content_();
-    if (content) {
-      return content?.status === XxxContentStatus.LOADED;
-    }
-    return false;
-  })
-
-  $isContentLoading_: Signal<boolean> = computed(() => {
-    const content: XxxContent | undefined = this.$content_();
-    if (content) {
-      return content?.status === XxxContentStatus.LOADING;
-    }
-    return false;
+  private $isContent: Signal<boolean> = computed(() => {
+    return this.$content() !== undefined;
   })
 
   // Reducers
@@ -123,54 +81,14 @@ export class XxxContentStore {
     this.$contentState.update(state => ({...state, selectedKey}));
   }
 
-  private getContentReducer(key: string) {
-    // Remove any existing content, also replaces old array for immutability
-    const contents: XxxContent[] = this.$contents_().filter(item => item.key !== key);
-    // Create a new content object
-    const content: XxxContent = {
-      status: XxxContentStatus.LOADING,
-      key
-    };
-    // Add the new content object
-    contents.push(content);
-    // Finally, update the state
-    this.$contentState.update(state => ({
-        ...state,
-        contents
-      })
-    );
-  }
-
-  private getContentErrorReducer(key: string, err: HttpErrorResponse) {
-    // Set the error message
-    const errorMessage: string = `Key '${key}'. ${XxxHttpUtilities.setErrorMessage(err)}`;
-    // Remove any existing content, also replaces old array for immutability
-    const contents: XxxContent[] = this.$contents_().filter(item => item.key !== key);
-    // Create a new content object
-    const content: XxxContent = {
-      errorMessage,
-      status: XxxContentStatus.ERROR,
-      key
-    };
-    // Add the new content object
-    contents.push(content);
-    // Finally update the state
-    this.$contentState.update(state => ({
-        ...state,
-        contents
-      })
-    );
-  }
-
-  private getContentSuccessReducer(contentResource: ResourceRef<XxxContentApi>) {
+  private getContentResourceReducer(contentResource: ResourceRef<XxxContentApi>) {
     // Create a new content object
     const content: XxxContent = {
       contentResource,
-      status: contentResource.hasValue() && contentResource.value().contentModel.pageTitle ? XxxContentStatus.LOADED : XxxContentStatus.EMPTY,
       key: contentResource.hasValue() ? contentResource.value().key : ''
     };
     // Remove any existing content, also replaces the old array for immutability
-    const contents: XxxContent[] = this.$contents_().filter(item => item.key !== content.key);
+    const contents: XxxContent[] = this.$contents().filter(item => item.key !== content.key);
     // Add the new content object
     contents.push(content);
     // Finally, update the state
@@ -186,17 +104,16 @@ export class XxxContentStore {
   // They are often used to run a service
   getContentEffect(key: string) {
     const contentResource: ResourceRef<XxxContentApi | undefined> = this.contentService.getContent(key);
-    if (contentResource.hasValue()) {
-      this.getContentSuccessAction(contentResource)
+    if(contentResource !== undefined) {
+      this.getContentResource(contentResource as ResourceRef<XxxContentApi>)
     }
   }
 
   showContentEffect(key: string) {
     // Check to see if content already exists
-    const isContentLoaded: boolean = this.$isContentLoaded_();
-    // If content is not loaded then load it
-    if (!this.$isContentLoaded_()) {
-      this.getContentAction(key);
+    // If content is not in state, then load it
+    if (!this.$isContent()) {
+      this.getContent(key);
     }
   }
 }

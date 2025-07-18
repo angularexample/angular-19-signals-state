@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, inject, Signal} from '@angular/core';
 import {XxxContent} from "../xxx-common/xxx-content/xxx-content.types";
 import {XxxContentComponent} from '../xxx-common/xxx-content/xxx-content.component';
-import {XxxContentFacade} from "../xxx-common/xxx-content/xxx-content-facade.service";
+import {XxxContentStore} from '../xxx-common/xxx-content/xxx-content-store';
 import {XxxSanitizePipe} from '../xxx-common/xxx-sanitize/xxx-sanitize.pipe';
 
 @Component({
@@ -15,11 +15,11 @@ import {XxxSanitizePipe} from '../xxx-common/xxx-sanitize/xxx-sanitize.pipe';
   templateUrl: './xxx-home.component.html',
 })
 export class XxxHomeComponent {
-  contentFacade: XxxContentFacade = inject(XxxContentFacade);
+  contentStore: XxxContentStore = inject(XxxContentStore);
   contentKey = 'home';
-  $content: Signal<XxxContent | undefined> = this.contentFacade.$content;
+  $content: Signal<XxxContent | undefined> = this.contentStore.$content;
 
   constructor() {
-    this.contentFacade.showContent(this.contentKey);
+    this.contentStore.showContent(this.contentKey);
   }
 }

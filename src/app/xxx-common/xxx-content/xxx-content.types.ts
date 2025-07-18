@@ -2,9 +2,7 @@ import {ResourceRef} from '@angular/core';
 
 export interface XxxContent {
   contentResource?: ResourceRef<XxxContentApi>;
-  errorMessage?: string;
   key: string;
-  status: XxxContentStatus;
 }
 
 export interface XxxContentApi {
@@ -24,11 +22,4 @@ export const xxxContentInitialState: XxxContentState = {
 export interface XxxContentState {
   contents: XxxContent[];
   selectedKey?: string;
-}
-
-export enum XxxContentStatus {
-  EMPTY = 'EMPTY',
-  ERROR = 'ERROR',
-  LOADED = 'LOADED',
-  LOADING = 'LOADING',
 }

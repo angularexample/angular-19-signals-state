@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, inject, Signal} from '@angular/core';
 import {XxxContent} from "../xxx-common/xxx-content/xxx-content.types";
 import {XxxContentComponent} from '../xxx-common/xxx-content/xxx-content.component';
-import {XxxContentFacade} from "../xxx-common/xxx-content/xxx-content-facade.service";
+import {XxxContentStore} from '../xxx-common/xxx-content/xxx-content-store';
 import {XxxUser} from "./xxx-user.types";
 import {XxxUserFacade} from "./xxx-user-facade.service";
 
@@ -15,10 +15,10 @@ import {XxxUserFacade} from "./xxx-user-facade.service";
   templateUrl: './xxx-user.component.html',
 })
 export class XxxUserComponent {
-  private contentFacade: XxxContentFacade = inject(XxxContentFacade);
+  private contentStore: XxxContentStore = inject(XxxContentStore);
   contentKey: string = 'user';
   private userFacade: XxxUserFacade = inject(XxxUserFacade);
-  $content: Signal<XxxContent | undefined> = this.contentFacade.$content;
+  $content: Signal<XxxContent | undefined> = this.contentStore.$content;
   $isUsersEmpty: Signal<boolean> = this.userFacade.$isUsersEmpty;
   $isUsersLoaded: Signal<boolean> = this.userFacade.$isUsersLoaded;
   $isUsersLoading: Signal<boolean> = this.userFacade.$isUsersLoading;
@@ -26,7 +26,7 @@ export class XxxUserComponent {
   $users: Signal<XxxUser[]> = this.userFacade.$users;
 
   constructor() {
-    this.contentFacade.showContent(this.contentKey)
+    this.contentStore.showContent(this.contentKey)
     this.userFacade.showUsers();
   }
 

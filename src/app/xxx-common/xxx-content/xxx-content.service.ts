@@ -13,10 +13,6 @@ export class XxxContentService {
    */
   getContent(key: string): HttpResourceRef<XxxContentApi | undefined> {
     const url = `/data/content/${key}.json`;
-    const resourceRequest: HttpResourceRequest = {
-      method: 'GET',
-      url
-    };
-    return  httpResource(() => (resourceRequest));
+    return  httpResource(() => url);
   }
 }
