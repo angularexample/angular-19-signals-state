@@ -1,7 +1,3 @@
-@if($content() && $content()?.contentResource && $content()?.contentResource?.hasValue()){
-  <pre>{{$content()?.contentResource?.value() | json}}</pre>
-}
-
-@if(contentKey()){
-  <pre>contentKey: {{contentKey()}}</pre>
+@if($content() && $content()?.contentResource && $content()?.contentResource?.isLoading()){
+  <xxx-loading></xxx-loading>
 }

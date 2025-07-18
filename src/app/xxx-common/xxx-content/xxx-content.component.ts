@@ -1,14 +1,13 @@
 import {ChangeDetectionStrategy, Component, inject, input, InputSignal, Signal} from '@angular/core';
-import {JsonPipe} from '@angular/common';
 import {XxxContent} from './xxx-content.types';
 import {XxxContentStore} from './xxx-content-store';
+import {XxxLoadingComponent} from '../xxx-loading/xxx-loading.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [JsonPipe],
+  imports: [XxxLoadingComponent],
   selector: 'xxx-content',
   standalone: true,
-  styleUrl: './xxx-content.component.scss',
   templateUrl: './xxx-content.component.html'
 })
 export class XxxContentComponent {

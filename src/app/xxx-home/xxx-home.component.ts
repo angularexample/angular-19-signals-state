@@ -16,7 +16,7 @@ import {XxxSanitizePipe} from '../xxx-common/xxx-sanitize/xxx-sanitize.pipe';
 })
 export class XxxHomeComponent {
   contentStore: XxxContentStore = inject(XxxContentStore);
-  contentKey = 'home';
+  readonly contentKey = 'home';
   $content: Signal<XxxContent | undefined> = this.contentStore.$content;
 
   constructor() {

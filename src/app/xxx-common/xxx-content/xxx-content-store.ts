@@ -60,14 +60,14 @@ $content: Signal<XxxContent | undefined> = computed(() => {
     return content;
   })
 
-  $errorMessage_: Signal<string | undefined> = computed(() => {
+  // $errorMessage_: Signal<string | undefined> = computed(() => {
     // const content: XxxContent | undefined = this.$content_();
     // if (content) {
     //   return content?.errorMessage;
     // }
     //TODO
-    return undefined;
-  })
+  //   return undefined;
+  // })
 
   private $isContent: Signal<boolean> = computed(() => {
     return this.$content() !== undefined;
@@ -82,10 +82,11 @@ $content: Signal<XxxContent | undefined> = computed(() => {
   }
 
   private getContentResourceReducer(contentResource: ResourceRef<XxxContentApi>) {
+    const selectedKey: string | undefined = this.$selectedKey();
     // Create a new content object
     const content: XxxContent = {
       contentResource,
-      key: contentResource.hasValue() ? contentResource.value().key : ''
+      key: selectedKey ? selectedKey : '',
     };
     // Remove any existing content, also replaces the old array for immutability
     const contents: XxxContent[] = this.$contents().filter(item => item.key !== content.key);
@@ -102,14 +103,14 @@ $content: Signal<XxxContent | undefined> = computed(() => {
   // Effects
   // For data access, navigation, or to open a dialog
   // They are often used to run a service
-  getContentEffect(key: string) {
+  private getContentEffect(key: string) {
     const contentResource: ResourceRef<XxxContentApi | undefined> = this.contentService.getContent(key);
     if(contentResource !== undefined) {
       this.getContentResource(contentResource as ResourceRef<XxxContentApi>)
     }
   }
 
-  showContentEffect(key: string) {
+  private showContentEffect(key: string) {
     // Check to see if content already exists
     // If content is not in state, then load it
     if (!this.$isContent()) {
