@@ -26,7 +26,7 @@ export class XxxUserComponent {
   $users: Signal<XxxUser[]> = this.userFacade.$users;
 
   constructor() {
-    this.contentStore.showContent(this.contentKey)
+    this.contentStore.showContentAction(this.contentKey)
     this.userFacade.showUsers();
   }
 

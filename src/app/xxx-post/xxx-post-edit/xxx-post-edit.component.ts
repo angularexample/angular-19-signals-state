@@ -34,7 +34,7 @@ export class XxxPostEditComponent {
   $selectedPost: Signal<XxxPost | undefined> = this.postFacade.$selectedPost;
 
   constructor() {
-    this.contentStore.showContent(this.contentKey)
+    this.contentStore.showContentAction(this.contentKey)
     this.loadFormData();
     this.subscribeToFormChanges();
   }

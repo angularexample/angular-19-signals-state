@@ -23,15 +23,15 @@ export class XxxContentStore {
   // If not, then we can call the effect or reducer directly
 
   // Action methods run the reducer and effect
-  private getContent(key: string) {
+  private getContentAction(key: string) {
     this.getContentEffect(key);
   }
 
-  private getContentResource(contentResource: ResourceRef<XxxContentApi>) {
+  private getContentResourceAction(contentResource: ResourceRef<XxxContentApi>) {
     this.getContentResourceReducer(contentResource);
   }
 
-  showContent(key: string) {
+  showContentAction(key: string) {
     this.showContentReducer(key);
     this.showContentEffect(key);
   }
@@ -106,7 +106,7 @@ $content: Signal<XxxContent | undefined> = computed(() => {
   private getContentEffect(key: string) {
     const contentResource: ResourceRef<XxxContentApi | undefined> = this.contentService.getContent(key);
     if(contentResource !== undefined) {
-      this.getContentResource(contentResource as ResourceRef<XxxContentApi>)
+      this.getContentResourceAction(contentResource as ResourceRef<XxxContentApi>)
     }
   }
 
@@ -114,7 +114,7 @@ $content: Signal<XxxContent | undefined> = computed(() => {
     // Check to see if content already exists
     // If content is not in state, then load it
     if (!this.$isContent()) {
-      this.getContent(key);
+      this.getContentAction(key);
     }
   }
 }

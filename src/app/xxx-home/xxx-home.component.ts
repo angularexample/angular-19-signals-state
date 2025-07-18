@@ -20,6 +20,6 @@ export class XxxHomeComponent {
   $content: Signal<XxxContent | undefined> = this.contentStore.$content;
 
   constructor() {
-    this.contentStore.showContent(this.contentKey);
+    this.contentStore.showContentAction(this.contentKey);
   }
 }

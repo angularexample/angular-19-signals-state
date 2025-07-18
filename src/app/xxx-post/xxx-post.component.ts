@@ -27,7 +27,7 @@ export class XxxPostComponent {
   $selectedPostId: Signal<number | undefined> = this.postFacade.$selectedPostId;
 
   constructor() {
-    this.contentStore.showContent(this.contentKey)
+    this.contentStore.showContentAction(this.contentKey)
     this.postFacade.showPosts();
   }
 
