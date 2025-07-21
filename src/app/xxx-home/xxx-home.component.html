@@ -1,9 +1,9 @@
 <main>
   <xxx-content contentKey="{{contentKey}}"></xxx-content>
-  @if ($content(); as content) {
+  @if ($content()?.contentResource?.value()?.contentModel; as content) {
     <section>
-      <h1>{{ content?.contentResource?.value()?.contentModel?.pageTitle }}</h1>
-      <div class="xxx-body-content" [innerHTML]="content?.contentResource?.value()?.contentModel?.bodyText | xxxSanitize"></div>
+      <h1>{{ content.pageTitle }}</h1>
+      <div class="xxx-body-content" [innerHTML]="content.bodyText | xxxSanitize"></div>
     </section>
   }
 </main>
