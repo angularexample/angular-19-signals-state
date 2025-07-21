@@ -1,4 +1,4 @@
-import { httpResource, HttpResourceRef, HttpResourceRequest } from '@angular/common/http';
+import { httpResource, HttpResourceRef } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { XxxContentApi } from "./xxx-content.types";
 
